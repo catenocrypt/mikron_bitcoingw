@@ -1,0 +1,4 @@
+sqlite3
+bottle>=0.12.13
+configparser>=3.5.0
+logging

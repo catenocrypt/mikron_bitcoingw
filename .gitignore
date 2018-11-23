@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# local DB
+bitcoingw_db.db
+
 # C extensions
 *.so
 
