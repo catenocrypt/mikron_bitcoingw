@@ -19,31 +19,33 @@ def setHeaders():
     bottle.response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
     bottle.response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token' 
 
-@bottle.route('/testbcreceive/callback', method='POST')
+@bottle.route('/testbcreceive/callback', method='GET')
 def test_blockchaincom_callback():
+    req_url = bottle.request.url
+    #print("req url", req_url)
+    #print("GET", bottle.request.GET)
+    debug_lines.insert(0, "Incoming callback: " + str(req_url))
+    secret = bottle.request.GET.get('secret')
+    address = bottle.request.GET.get('address')
+    transaction_hash = bottle.request.GET.get('transaction_hash')
+    value = bottle.request.GET.get('value')
+    confirmations = bottle.request.GET.get('confirmations')
+    print("secret", secret, "address", address, "transaction_hash", transaction_hash, "value", value, "confirmations", confirmations)
     setHeaders()
-    postdata = bottle.request.body.read().decode('utf8')
-    #print("postdata ", postdata)
-    postjson = json.loads(postdata.replace("'", '"'))
-    print("postjson ", postjson)
     resp = "NOT_OK"
-    secret = ''
-    if 'secret' in postjson:
-        secret = postjson['secret']
-    if 'transaction_hash' in postjson and 'address' in postjson and 'confirmations' in postjson and 'value' in postjson:
-        confirmations = int(postjson['confirmations'])
-        if confirmations < 3:
-            print("Not enough confirmations!", confirmations)
-        else:
-            # ACCEPTED
-            resp = "*ok*"   # proper response
-            msg = "Payment received, amount " + str(postjson['value']) + ", conf's " + str(confirmations) + ", to_addr " + str(postjson['address']) + ", tx_hash " + str(postjson['transaction_hash']) + ", secret " + str(secret) + " ."
-            print("Msg", msg)
-            debug_lines.insert(0, msg)
-            cnt = 1
-            for l in debug_lines:
-                print(cnt, l)
-                cnt = cnt + 1
+    confirmationsInt = int(confirmations)
+    if confirmationsInt < 3:
+        print("Not enough confirmations!", confirmations)
+    else:
+        # ACCEPTED
+        resp = "*ok*"   # proper response
+        msg = "Payment received, amount " + str(value) + ", conf's " + str(confirmations) + ", to_addr " + str(address) + ", tx_hash " + str(transaction_hash) + ", secret " + str(secret) + " ."
+        print("Msg", msg)
+        debug_lines.insert(0, msg)
+        cnt = 1
+        for l in debug_lines:
+            print(cnt, l)
+            cnt = cnt + 1
     return resp
 
 @bottle.route('/testbcreceive/test.html', method='GET')
