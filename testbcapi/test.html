@@ -12,11 +12,11 @@ function base_url() {
 
 function get_addr() {
     xpub = document.getElementById('xpub').value;
-    callback_url = base_url() + "testbcreceive/callback";
+    secret = document.getElementById('secret').value;
+    callback_url = base_url() + "testbcreceive/callback?" + "secret=" + secret;
     key = document.getElementById('apikey').value;
     gap_limit = 50;
-    secret = document.getElementById('secret').value;
-    url = "https://api.blockchain.info/v2/receive?xpub=" + xpub + "&callback=" + encodeURIComponent(callback_url) + "&key=" + key + "&gap_limit=" + gap_limit + "&secret=" + secret;
+    url = "https://api.blockchain.info/v2/receive?xpub=" + xpub + "&callback=" + encodeURIComponent(callback_url) + "&key=" + key + "&gap_limit=" + gap_limit;
     console.log(url)
     document.getElementById('get_url').value = url;
     document.getElementById('res_address').value = '?';
