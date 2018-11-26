@@ -1,0 +1,97 @@
+<html>
+    <head>
+        <script>
+function refresh_all() {
+    console.log("Refresh All");
+    refresh_dlines();
+}
+
+function base_url() {
+    return document.getElementById('base_url').value;
+}
+
+function get_addr() {
+    xpub = document.getElementById('xpub').value;
+    callback_url = base_url() + "testbcreceive/callback";
+    key = document.getElementById('apikey').value;
+    gap_limit = 50;
+    url = "https://api.blockchain.info/v2/receive?xpub=" + xpub + "&callback=" + encodeURIComponent(callback_url) + "&key=" + key + "&gap_limit=" + gap_limit;
+    console.log(url)
+    document.getElementById('res_address').value = '?';
+    var http = new XMLHttpRequest();
+    http.onreadystatechange = function() {
+        if (http.readyState == XMLHttpRequest.DONE) {
+            if (http.status == 200) {
+                console.log(http.responseText)
+                var respJson = JSON.parse(http.responseText);
+                console.log(respJson)
+                document.getElementById('res_address').value = respJson.address;
+            }
+            else if (http.status == 400) {
+                console.log('There was an error 400 ' + url);
+            }
+            else {
+                console.log('Something else other than 200 was returned ' + http.status + ' ' + url);
+            }
+        }
+    };
+
+    http.open("GET", url, true);
+    http.send();    
+}
+
+function refresh_dlines() {
+    url = base_url() + "testbcreceive/debuglines";
+    console.log(url)
+    document.getElementById('dlines').innerText = '?';
+    var http = new XMLHttpRequest();
+    http.onreadystatechange = function() {
+        if (http.readyState == XMLHttpRequest.DONE) {
+            if (http.status == 200) {
+                //console.log(http.responseText)
+                document.getElementById('dlines').innerText = http.responseText;
+            }
+            else if (http.status == 400) {
+                console.log('There was an error 400 ' + url);
+            }
+            else {
+                console.log('Something else other than 200 was returned ' + http.status + ' ' + url);
+            }
+        }
+    };
+
+    http.open("GET", url, true);
+    http.send();    
+}
+        </script>
+    </head>
+    <body onload="refresh_all()">
+        <div>
+            <form>
+                Test base url: <input id="base_url" size="100" value="http://server3.mikron.io:8229/"></input>
+            </form>
+        </div>
+        
+        <div>
+            <h2>Genearate Address</h2>
+            <form>
+                XPUB: <input id="xpub" size="120" value="xpub6Cxb2AMw38gNBhPbVSaoTw8mWd39uL6j5RLZVAQhQw4qtKUdZLgaYkD34p6vQ6AqoxDWPexirHfRLQJyQR419NKrp4HvewLhFqGWYdj7zpW"/>
+                <br/>
+                Key:  <input id="apikey" size="80" value="538788c1-397f-4499-8250-30413fe37f7e"/>
+                <br/>
+                <button onclick="get_addr()">Get new address</button>
+                <br/>
+                Address:  <input id="res_address" size="80" value="?"/>
+            </form>
+        </div>
+
+        <div>
+            <h2>Debug lines</h2>
+            <form>
+                <button onclick="refresh_dlines()">Refresh</button>
+                <br/>
+                <label id="dlines" size="100">(here comes the result)</label>
+            </form>
+        </div>
+    </body>
+</html>
