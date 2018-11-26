@@ -15,8 +15,10 @@ function get_addr() {
     callback_url = base_url() + "testbcreceive/callback";
     key = document.getElementById('apikey').value;
     gap_limit = 50;
-    url = "https://api.blockchain.info/v2/receive?xpub=" + xpub + "&callback=" + encodeURIComponent(callback_url) + "&key=" + key + "&gap_limit=" + gap_limit;
+    secret = document.getElementById('secret').value;
+    url = "https://api.blockchain.info/v2/receive?xpub=" + xpub + "&callback=" + encodeURIComponent(callback_url) + "&key=" + key + "&gap_limit=" + gap_limit + "&secret=" + secret;
     console.log(url)
+    document.getElementById('get_url').value = url;
     document.getElementById('res_address').value = '?';
     var http = new XMLHttpRequest();
     http.onreadystatechange = function() {
@@ -79,9 +81,13 @@ function refresh_dlines() {
                 <br/>
                 Key:  <input id="apikey" size="80" value="538788c1-397f-4499-8250-30413fe37f7e"/>
                 <br/>
+                Secret:  <input id="secret" size="80" value="TITOK"/>
+                <br/>
                 <button onclick="get_addr()">Get new address</button>
                 <br/>
-                Address:  <input id="res_address" size="80" value="?"/>
+                Address:  <input id="res_address" size="80" readonly="true"/>
+                <br/>
+                url:  <input id="get_url" size="80" readonly="true"/>
             </form>
         </div>
 
